@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Occupancy Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Lab Occupancy Management</h1>
+    </header>
+    
+    <main>
+        <!-- Lab Management Section -->
+        <section class="lab-management">
+            <h2>Manage Labs</h2>
+            <form id="labForm">
+                <label for="labName">Lab Name:</label>
+                <input type="text" id="labName" required>
+
+                <label for="labStatus">Status:</label>
+                <select id="labStatus">
+                    <option value="occupied">Occupied</option>
+                    <option value="unoccupied">Unoccupied</option>
+                </select>
+
+                <button type="submit">Update Status</button>
+            </form>
+        </section>
+
+        <!-- Occupied Labs Section -->
+        <section class="occupied-labs">
+            <h2>Occupied Labs</h2>
+            <ul id="occupiedList">
+                <!-- List of occupied labs will appear here -->
+            </ul>
+        </section>
+
+        <!-- Unoccupied Labs Section -->
+        <section class="unoccupied-labs">
+            <h2>Unoccupied Labs</h2>
+            <ul id="unoccupiedList">
+                <!-- List of unoccupied labs will appear here -->
+            </ul>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
