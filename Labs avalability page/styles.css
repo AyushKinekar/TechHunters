@@ -16,7 +16,7 @@ header {
 
 main {
     margin: 2rem auto;
-    max-width: 800px;
+    max-width: 900px;
     background-color: white;
     padding: 1rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -67,4 +67,25 @@ li {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+th {
+    background-color: #3498db;
+    color: white;
+}
+
+#occupantNameContainer {
+    display: none;
 }

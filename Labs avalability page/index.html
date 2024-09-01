@@ -16,14 +16,19 @@
         <section class="lab-management">
             <h2>Manage Labs</h2>
             <form id="labForm">
-                <label for="labName">Lab Name:</label>
-                <input type="text" id="labName" required>
+                <label for="labNumber">Lab/Room Number:</label>
+                <input type="text" id="labNumber" required>
 
                 <label for="labStatus">Status:</label>
                 <select id="labStatus">
                     <option value="occupied">Occupied</option>
                     <option value="unoccupied">Unoccupied</option>
                 </select>
+
+                <div id="occupantNameContainer">
+                    <label for="occupantName">Occupied By:</label>
+                    <input type="text" id="occupantName">
+                </div>
 
                 <button type="submit">Update Status</button>
             </form>
@@ -43,6 +48,23 @@
             <ul id="unoccupiedList">
                 <!-- List of unoccupied labs will appear here -->
             </ul>
+        </section>
+
+        <!-- Availability Chart Section -->
+        <section class="availability-chart">
+            <h2>Lab Availability Chart</h2>
+            <table id="availabilityTable">
+                <thead>
+                    <tr>
+                        <th>Lab/Room Number</th>
+                        <th>Status</th>
+                        <th>Occupied By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Lab availability data will appear here -->
+                </tbody>
+            </table>
         </section>
     </main>
 
