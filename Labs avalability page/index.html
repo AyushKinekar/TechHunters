@@ -22,13 +22,12 @@
                 <label for="labStatus">Status:</label>
                 <select id="labStatus">
                     <option value="occupied">Occupied</option>
-                    <option value="unoccupied">Unoccupied</option>
+                    <option value="unoccupied" selected>Unoccupied</option>
                 </select>
 
-                <div id="occupantNameContainer">
-                    <label for="occupantName">Occupied By:</label>
-                    <input type="text" id="occupantName">
-                </div>
+                <!-- Occupied By input is now always visible -->
+                <label for="occupantName">Occupied By:</label>
+                <input type="text" id="occupantName" disabled> <!-- Initially disabled -->
 
                 <button type="submit">Update Status</button>
             </form>

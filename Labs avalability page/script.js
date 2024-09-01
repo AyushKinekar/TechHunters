@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const labForm = document.getElementById('labForm');
     const labStatusSelect = document.getElementById('labStatus');
-    const occupantNameContainer = document.getElementById('occupantNameContainer');
+    const occupantNameInput = document.getElementById('occupantName');
     const occupiedList = document.getElementById('occupiedList');
     const unoccupiedList = document.getElementById('unoccupiedList');
     const availabilityTableBody = document.getElementById('availabilityTable').querySelector('tbody');
@@ -15,12 +15,13 @@ document.addEventListener('DOMContentLoaded', function () {
     storedLabs.forEach(renderLab);
     renderAvailabilityChart();
 
-    // Show/hide "Occupied By" input based on selected status
+    // Enable/Disable "Occupied By" input based on selected status
     labStatusSelect.addEventListener('change', function () {
         if (this.value === 'occupied') {
-            occupantNameContainer.style.display = 'block';
+            occupantNameInput.disabled = false;
         } else {
-            occupantNameContainer.style.display = 'none';
+            occupantNameInput.value = '';  // Clear the input if disabled
+            occupantNameInput.disabled = true;
         }
     });
 
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const labNumber = document.getElementById('labNumber').value;
         const labStatus = document.getElementById('labStatus').value;
-        const occupantName = labStatus === 'occupied' ? document.getElementById('occupantName').value : '';
+        const occupantName = labStatus === 'occupied' ? occupantNameInput.value : '';
 
         const lab = {
             id: Date.now(),
@@ -46,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
         renderLab(lab);
         renderAvailabilityChart();
         labForm.reset();
-        occupantNameContainer.style.display = 'none';  // Hide occupant name input
+        occupantNameInput.disabled = true;  // Re-disable the "Occupied By" input
     });
 
     // Function to render a lab

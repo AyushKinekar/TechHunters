@@ -86,6 +86,6 @@ th {
     color: white;
 }
 
-#occupantNameContainer {
-    display: none;
+#occupantName:disabled {
+    background-color: #e0e0e0;
 }
