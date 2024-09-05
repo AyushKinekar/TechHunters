@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Occupancy Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Lab Occupancy Management</h1>
+    </header>
+    
+    <main>
+        <!-- Lab Management Section -->
+        <section class="lab-management">
+            <h2>Manage Labs</h2>
+            <form id="labForm">
+                <label for="labNumber">Lab/Room Number:</label>
+                <input type="text" id="labNumber" required>
+
+                <label for="labStatus">Status:</label>
+                <select id="labStatus">
+                    <option value="occupied">Occupied</option>
+                    <option value="unoccupied" selected>Unoccupied</option>
+                </select>
+
+                <!-- Occupied By input is now always visible -->
+                <label for="occupantName">Occupied By:</label>
+                <input type="text" id="occupantName" disabled> <!-- Initially disabled -->
+
+                <button type="submit">Update Status</button>
+            </form>
+        </section>
+
+        <!-- Occupied Labs Section -->
+        <section class="occupied-labs">
+            <h2>Occupied Labs</h2>
+            <ul id="occupiedList">
+                <!-- List of occupied labs will appear here -->
+            </ul>
+        </section>
+
+        <!-- Unoccupied Labs Section -->
+        <section class="unoccupied-labs">
+            <h2>Unoccupied Labs</h2>
+            <ul id="unoccupiedList">
+                <!-- List of unoccupied labs will appear here -->
+            </ul>
+        </section>
+
+        <!-- Availability Chart Section -->
+        <section class="availability-chart">
+            <h2>Lab Availability Chart</h2>
+            <table id="availabilityTable">
+                <thead>
+                    <tr>
+                        <th>Lab/Room Number</th>
+                        <th>Status</th>
+                        <th>Occupied By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Lab availability data will appear here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

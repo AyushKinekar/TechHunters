@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Room Availability</title>
+    <link rel="stylesheet" href="styles1.css">
+</head>
+<body>
+    <header>
+        <h1>Faculty Room Availability</h1>
+    </header>
+
+    <main>
+        <!-- Faculty Check-In Section -->
+        <section class="faculty-checkin">
+            <h2>Faculty Check-In</h2>
+            <form id="checkinForm">
+                <label for="facultyName">Faculty Name:</label>
+                <input type="text" id="facultyName" required>
+
+                <label for="facultyID">Faculty ID:</label>
+                <input type="text" id="facultyID" required>
+
+                <label for="roomSelect">Select Room:</label>
+                <select id="roomSelect">
+                    <option value="room101">Room 101</option>
+                    <option value="room102">Room 102</option>
+                    <option value="room103">Room 103</option>
+                    <option value="room104">Room 104</option>
+                </select>
+
+                <button type="submit">Check In</button>
+            </form>
+        </section>
+
+        <!-- Room Availability Section -->
+        <section class="room-availability">
+            <h2>Current Room Availability</h2>
+            <ul id="roomList">
+                <!-- List of room availability will be dynamically generated -->
+            </ul>
+        </section>
+
+        <!-- Clear All Check-Ins Button -->
+        <button id="clearCheckins">Clear All Check-Ins</button>
+    </main>
+
+    <script src="script1.js"></script>
+</body>
+</html>

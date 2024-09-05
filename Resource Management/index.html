@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCMS - Resource Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+        <header>
+            <div class="logo">
+                <img src="../clogo.png" alt="Logo"> <!-- Replace 'logo.png' with your logo image file -->
+                <h1>TechHunters</h1>
+            </div>
+            <div class="nav-buttons">
+                <a href="#"><button>Button1</button></a>
+                <a href="#"><button>Button2</button></a>
+                <a href="#"><button>Button3</button></a>
+            </div>
+        </header>
+        
+        <main>
+            <!-- Resource Allocation Section -->
+            <section class="resource-allocation">
+            <h1>Resource Management</h1>
+            <h2>Allocate Resources</h2>
+            <form id="resourceForm">
+                <label for="userName">Name:</label>
+                <input type="text" id="userName" required>
+
+                <label for="userID">ID:</label>
+                <input type="text" id="userID" required>
+
+                <label for="resourceType">Resource Type:</label>
+                <select id="resourceType">
+                    <option value="Projector">Projector</option>
+                    <option value="Laptop">Laptop</option>
+                    <option value="Whiteboard">Whiteboard</option>
+                </select>
+
+                <label for="resourceCount">Number of Resources:</label>
+                <input type="number" id="resourceCount" min="1" max="10" value="1" required>
+
+                <button type="submit">Allocate Resource</button>
+            </form>
+        </section>
+
+        <!-- Allocated Resources Section -->
+        <section class="resource-status">
+            <h2>Allocated Resources</h2>
+            <ul id="resourceList">
+                <!-- Allocated resources will be shown here -->
+            </ul>
+        </section>
+
+        <!-- Download Data Button -->
+        <button id="downloadData">Download Data as Text File</button>
+
+        <!-- Log Section -->
+        <section class="log-section">
+            <h2>Action Log</h2>
+            <ul id="logList">
+                <!-- Log entries will be shown here -->
+            </ul>
+            <button id="clearLog">Clear Log</button>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

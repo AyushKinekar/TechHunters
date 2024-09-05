@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Team Members</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #fff; /* White background */
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #11386b;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            color: #11386b;
+        }
+        h1 {
+            color: white;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Creates a 2x2 grid layout */
+            gap: 20px;
+            justify-content: center;
+        }
+
+        li {
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s; /* Apply transform to the entire list item */
+        }
+
+        li:hover {
+            transform: scale(1.1); /* Scale the entire list item, including the name */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .team-member {
+            background-color: #e0e0e0;
+            border-radius: 50%; /* Ensure the member remains circular */
+            display: inline-block;
+            width: 150px;
+            height: 150px;
+            position: relative;
+            overflow: hidden; /* Clip the image inside the circle */
+        }
+
+        .team-member img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the image covers the entire circle */
+            border-radius: 50%; /* Ensures the image remains circular */
+        }
+
+        .member-name {
+            margin-top: 10px;
+            color: #11386b;
+            font-weight: bold;
+            transition: transform 0.3s; /* Smooth scaling for the name */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Our Team</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Team Members</h2>
+            <ul>
+                <li>
+                    <div class="team-member">
+                        <img src="https://media.gettyimages.com/id/1388517980/photo/transgender-non-binary-person-getting-ready-to-go-out-for-an-event-in-guwahati-india.jpg?s=612x612&w=gi&k=20&c=TCy-PHuytVtrtLTpb9Z9UJDvdaqLWAon-K0hLh2P40I=" alt="Ayush Kinekar">
+                    </div>
+                    <div class="member-name">Ayush Kinekar</div>
+                    <div>2nd yr B.Tech (CSE) student</div>
+                </li>
+                <li>
+                    <div class="team-member">
+                        <img src="https://media.gettyimages.com/id/610831342/photo/star-cast-of-movie-ms-dhoni-the-untold-story-visits-ht-office-in-mumbai.jpg?s=612x612&w=gi&k=20&c=7JZCFIuPB_Jr8LlW154ZmEpLTbnb4Ma2GaDAC2Q9DXM=" alt="Sushant Kshirsagar">
+                    </div>
+                    <div class="member-name">Sushant Kshirsagar</div>
+                    <div>2nd yr B.Tech (CSE) student</div>
+                </li>
+                <li>
+                    <div class="team-member">
+                        <img src="https://media.gettyimages.com/id/919229024/photo/india-entertainment-cinema-bollywood.jpg?s=612x612&w=gi&k=20&c=kTMt7bOQJa7-hh7JfPOtMxc60Lkzfb5G7Tw5TnBn9v4=" alt="Khushabu Mahajan">
+                    </div>
+                    <div class="member-name">Khushabu Mahajan</div>
+                    <div>2nd yr B.Tech (CSE) student</div>
+                </li>
+                <li>
+                    <div class="team-member">
+                        <img src="https://media.gettyimages.com/id/73804703/photo/new-laws-for-pet-welfare-to-come-into-force.jpg?s=612x612&w=gi&k=20&c=e52F3ebYnCYWa3yUP4UlpMRakffrXdYTW0bJ891s3PI=" alt="Rohini Kumbhar">
+                    </div>
+                    <div class="member-name">Rohini Kumbhar</div>
+                    <div>2nd yr B.Tech (CSE) student</div>
+                </li>
+                <li>
+                    <div class="team-member">
+                        <img src="https://media.gettyimages.com/id/836936820/photo/the-stray-dogs-of-chernobyl.jpg?s=612x612&w=gi&k=20&c=TlapBlZgks3IdBm0ArNaNmbhG6ephoapW7OU71Two2I=" alt="Milind Patil">
+                    </div>
+                    <div class="member-name">Milind Patil</div>
+                    <div>2nd yr B.Tech (CSE) student</div>
+                </li>
+                <li>
+                    <div class="team-member">
+                        <img src="https://imgs.search.brave.com/6yiY5sbQzZbGlGDKNyBpdxv646fjYfXkFQeMwqdf3kE/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTI4/MzUxNDE3OS9waG90/by9ob3Jyb3Itd29t/YW4tZ2hvc3QtY3Jl/ZXB5LXN0YW5kaW5n/LXNob3ctdHdvLWhh/bmRzLWF0LXRoZS1o/b3VzZS5qcGc_cz02/MTJ4NjEyJnc9MCZr/PTIwJmM9dnFTcU1B/VTV4WVU2RE5KTHZk/bkdTTy1wVUtfeE9F/WDIyYzFyZi1ucDcz/MD0" alt="Sakshi Biradar">
+                    </div>
+                    <div class="member-name">Sakshi Biradar</div>
+                    <div>2nd yr B.Tech (CSE) student</div>
+                </li>
+                <!-- Add more members as needed -->
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

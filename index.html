@@ -5,57 +5,150 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SCMS - Resource Management</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Add styles to make the dashboard visible when toggled */
+        .dashboard {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #f8f8f8;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .dashboard.show {
+            display: block;
+        }
+
+        .dashboard-toggle {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: #11386b;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .dashboard-close {
+            background-color: #11386b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Centering the resource-allocation section */
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .resource-allocation {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px; /* Adjusted to move the box lower */
+        }
+
+        .btn-primary, .btn-secondary {
+            margin-top: 10px;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #11386b;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: black;
+        }
+
+        /* Adjusting the size of the logo */
+        .logo {
+            width: 100px;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <header>
+        <img src="../Logo.png" alt="Logo" class="logo">
         <h1>Smart Classroom Management - Resource Management</h1>
     </header>
-    
+
+    <!-- Dashboard Toggle Button -->
+    <button id="dashboardToggle" class="dashboard-toggle">☰</button>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="dashboard">
+        <button id="dashboardClose" class="dashboard-close">✖</button>
+        <h2>Dashboard</h2>
+        <ul>
+            <li><strong>Office Email:</strong> 
+                <a href="mailto:helpdesk@dypiu.ac.in">helpdesk@dypiu.ac.in</a>
+            </li>
+            <li><strong>About Us:</strong> 
+                <a href="team.html" target="_blank">Click Here</a>
+            </li>
+        </ul>
+    </section>
+
     <main>
         <!-- Resource Allocation Section -->
         <section class="resource-allocation">
             <h2>Allocate Resources</h2>
             <form id="resourceForm">
-                <label for="userName">Name:</label>
-                <input type="text" id="userName" required>
+                <div class="form-group">
+                    <label for="userName">Name:</label>
+                    <input type="text" id="userName" required>
+                </div>
 
-                <label for="userID">ID:</label>
-                <input type="text" id="userID" required>
+                <div class="form-group">
+                    <label for="userID">ID:</label>
+                    <input type="text" id="userID" required>
+                </div>
 
-                <label for="resourceType">Resource Type:</label>
-                <select id="resourceType">
-                    <option value="projector">Projector</option>
-                    <option value="laptop">Laptop</option>
-                    <option value="whiteboard">Whiteboard</option>
-                </select>
+                <div class="form-group">
+                    <label for="resourceType">Resource Type:</label>
+                    <select id="resourceType">
+                        <option value="projector">Projector</option>
+                        <option value="laptop">Laptop</option>
+                        <option value="whiteboard">Whiteboard</option>
+                        <option value="mike">Mike</option>
+                    </select>
+                </div>
 
-                <label for="resourceCount">Number of Resources:</label>
-                <input type="number" id="resourceCount" min="1" max="10" value="1" required>
+                <div class="form-group">
+                    <label for="resourceCount">Number of Resources:</label>
+                    <input type="number" id="resourceCount" min="1" max="10" value="1" required>
+                </div>
 
-                <button type="submit">Allocate Resource</button>
+                <button type="submit" class="btn-primary">Allocate Resource</button>
+                <button type="button" id="downloadData" class="btn-secondary">Download Data as Text File</button>
             </form>
-        </section>
-
-        <!-- Allocated Resources Section -->
-        <section class="resource-status">
-            <h2>Allocated Resources</h2>
-            <ul id="resourceList">
-                <!-- Allocated resources will be shown here -->
-            </ul>
-        </section>
-
-        <!-- Download Data Button -->
-        <button id="downloadData">Download Data as Text File</button>
-
-        <!-- Log Section -->
-        <section class="log-section">
-            <h2>Action Log</h2>
+            <h3>Action Log</h3>
             <ul id="logList">
-                <!-- Log entries will be shown here -->
+                <!-- Logs will be shown here -->
             </ul>
-            <button id="clearLog">Clear Log</button>
+            <button id="clearLog" class="btn-secondary">Clear Log</button>
         </section>
-
     </main>
 
     <script src="script.js"></script>
