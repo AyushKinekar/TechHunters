@@ -5,9 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmationMessage = document.getElementById('confirmationMessage');
     const availabilityTableBody = document.getElementById('availabilityTable').querySelector('tbody');
     const labForm = document.getElementById('labForm');
-    const deleteLabButton = document.getElementById('deleteLabButton');
-    const adminModeButton = document.getElementById('adminModeButton');
-    const adminSection = document.getElementById('adminSection');
 
     // Load stored labs from localStorage
     const storedLabs = JSON.parse(localStorage.getItem('labs')) || [];
@@ -32,20 +29,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         storedLabs.forEach(lab => {
             const row = document.createElement('tr');
-            row.innerHTML = 
-                `<td>${lab.number}</td>
+            row.innerHTML = `
+                <td>${lab.number}</td>
                 <td>${lab.status ? lab.status.charAt(0).toUpperCase() + lab.status.slice(1) : 'Unoccupied'}</td>
                 <td>${lab.occupant ? lab.occupant : '-'}</td>
-                <td>${lab.status === 'occupied' ? '<button class="leave-lab-button" data-lab-number="' + lab.number + '">Leave Lab</button>' : ''}</td>`;
+            `;
             availabilityTableBody.appendChild(row);
-        });
-
-        // Add event listeners for the "Leave Lab" buttons
-        const leaveLabButtons = document.querySelectorAll('.leave-lab-button');
-        leaveLabButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                leaveLab(button.getAttribute('data-lab-number'));
-            });
         });
     }
 
@@ -96,26 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Handle leaving a lab
-    function leaveLab(labNumber) {
-        const lab = storedLabs.find(lab => lab.number === labNumber);
-        if (lab && lab.status === 'occupied') {
-            // Update the lab status to unoccupied
-            lab.status = 'unoccupied';
-            lab.occupant = null; // Clear occupant name
-
-            // Save updated labs to localStorage
-            localStorage.setItem('labs', JSON.stringify(storedLabs));
-
-            // Display confirmation message
-            confirmationMessage.innerHTML = `<p>Lab ${labNumber} has been successfully left and is now available.</p>`;
-
-            // Re-populate the lab select dropdown and availability chart
-            populateLabSelect();
-            renderAvailabilityChart();
-        }
-    }
-
     // Handle lab management
     labForm.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -152,45 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Re-populate the lab select dropdown
         populateLabSelect();
-    });
-
-    // Handle lab deletion
-    deleteLabButton.addEventListener('click', function () {
-        const labNumber = document.getElementById('labNumber').value.trim();
-
-        if (!labNumber) {
-            alert('Lab/Room Number is required to delete.');
-            return;
-        }
-
-        const labIndex = storedLabs.findIndex(l => l.number === labNumber);
-        if (labIndex !== -1) {
-            // Remove the lab from the array
-            storedLabs.splice(labIndex, 1);
-
-            // Save updated labs to localStorage
-            localStorage.setItem('labs', JSON.stringify(storedLabs));
-
-            // Display confirmation message
-            confirmationMessage.innerHTML = `<p>Lab ${labNumber} has been successfully deleted.</p>`;
-
-            // Re-populate the lab select dropdown and availability chart
-            populateLabSelect();
-            renderAvailabilityChart();
-        } else {
-            confirmationMessage.innerHTML = `<p>Lab ${labNumber} does not exist.</p>`;
-        }
-    });
-
-    // Toggle admin section visibility
-    adminModeButton.addEventListener('click', function () {
-        if (adminSection.style.display === 'none') {
-            adminSection.style.display = 'block';
-            adminModeButton.textContent = 'Hide Admin';
-        } else {
-            adminSection.style.display = 'none';
-            adminModeButton.textContent = 'Admin Mode';
-        }
     });
 
     // Initial population of the lab select dropdown and availability chart

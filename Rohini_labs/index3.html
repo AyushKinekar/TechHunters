@@ -4,22 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Occupancy Management</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles3.css">
 </head>
 <body>
     <header>
         <h1>Lab Occupancy Management</h1>
     </header>
-
-    <!-- Button to toggle admin mode -->
-    <div class="admin-toggle-container">
-        <button id="adminModeButton" class="admin-mode-button">Admin Mode</button>
-    </div>
     
     <main>
         <!-- User Section -->
         <section class="user-section">
-            <h2>User - Book or Leave a Lab</h2>
+            <h2>User - Book a Lab</h2>
             <form id="bookingForm">
                 <label for="labSelect">Select a Lab/Room:</label>
                 <select id="labSelect" required>
@@ -45,7 +40,6 @@
                             <th>Lab/Room Number</th>
                             <th>Status</th>
                             <th>Occupied By</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -56,18 +50,17 @@
         </section>
 
         <!-- Admin Section -->
-        <section class="admin-section" id="adminSection">
+        <section class="admin-section">
             <h2>Admin - Manage Labs</h2>
             <form id="labForm">
                 <label for="labNumber">Lab/Room Number:</label>
                 <input type="text" id="labNumber" required>
 
                 <button type="submit">Update Lab</button>
-                <button type="button" id="deleteLabButton">Delete Lab</button> <!-- New button -->
             </form>
         </section>
     </main>
 
-    <script src="script.js"></script>
+    <script src="script3.js"></script>
 </body>
 </html>
