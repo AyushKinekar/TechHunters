@@ -2,49 +2,95 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Room Availability</title>
+    <title>Faculty Management</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+    </style>
 </head>
 <body>
     <header>
-        <h1>Faculty Room Availability</h1>
+        <div class="logo">
+            <img src="../clogo.png" alt="Logo"> <!-- Replace 'logo.png' with your logo image file -->
+            <h1>Faculty Management</h1>
+        </div>
+        <div class="nav-buttons">
+            <a href="#"><button>Button1</button></a>
+            <a href="#"><button>Button2</button></a>
+            <a href="#"><button>Button3</button></a>
+        </div>
     </header>
 
-    <main>
-        <!-- Faculty Check-In Section -->
-        <section class="faculty-checkin">
-            <h2>Faculty Check-In</h2>
-            <form id="checkinForm">
-                <label for="facultyName">Faculty Name:</label>
-                <input type="text" id="facultyName" required>
+    <button id="switchButton">Switch to Admin View</button>
+    
+    <!-- User View -->
+    <main id="userView">
+        <section class="search-faculty">
+            <h1>Faculty Management</h1>
+            <h2>Find Faculty</h2>
+            <input type="text" id="facultySearchInput" placeholder="Enter Faculty Name">
+            <button id="searchButton">Search</button>
+            <p id="searchResult"></p>
+        </section>
 
-                <label for="facultyID">Faculty ID:</label>
-                <input type="text" id="facultyID" required>
+        <section class="availability-chart">
+            <h2>Availability Chart</h2>
+            <div id="availabilityChart">
+                <!-- Availability chart will be populated here -->
+            </div>
+            <button id="showMoreChartButton" style="display: none;">Show More</button>
+            <button id="showLessChartButton" style="display: none;">Show Less</button>
+        </section>
 
-                <label for="roomSelect">Select Room:</label>
-                <select id="roomSelect">
-                    <option value="room101">Room 101</option>
-                    <option value="room102">Room 102</option>
-                    <option value="room103">Room 103</option>
-                    <option value="room104">Room 104</option>
+        <section class="faculty-room-list">
+            <h2>Faculty Room List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Faculty Name</th>
+                        <th>Room Number</th>
+                    </tr>
+                </thead>
+                <tbody id="facultyTableBody">
+                    <!-- Faculty list will be populated here -->
+                </tbody>
+            </table>
+            <button id="showMoreListButton" style="display: none;">Show More</button>
+            <button id="showLessListButton" style="display: none;">Show Less</button>
+        </section>
+    </main>
+
+    <!-- Admin View -->
+    <main id="adminView" style="display: none;">
+        <section class="add-faculty">
+            <h2>Add Faculty</h2>
+            <form id="addFacultyForm">
+                <input type="text" id="newFacultyName" placeholder="Faculty Name" required>
+                <input type="text" id="newRoomNumber" placeholder="Room Number" required>
+                <select id="newAvailability" required>
+                    <option value="true">Available</option>
+                    <option value="false">Not Available</option>
                 </select>
-
-                <button type="submit">Check In</button>
+                <button type="submit">Add Faculty</button>
             </form>
         </section>
 
-        <!-- Room Availability Section -->
-        <section class="room-availability">
-            <h2>Current Room Availability</h2>
-            <ul id="roomList">
-                <!-- List of room availability will be dynamically generated -->
-            </ul>
+        <section class="faculty-room-list">
+            <h2>Faculty Room List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Faculty Name</th>
+                        <th>Room Number</th>
+                        <th>Availability</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminFacultyTableBody">
+                    <!-- Admin faculty list will be populated here -->
+                </tbody>
+            </table>
         </section>
-
-        <!-- Clear All Check-Ins Button -->
-        <button id="clearCheckins">Clear All Check-Ins</button>
     </main>
 
     <script src="script.js"></script>

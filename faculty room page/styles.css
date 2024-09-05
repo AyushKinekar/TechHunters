@@ -1,103 +1,208 @@
 /* styles.css */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-    color: #2d3436;
 }
 
 header {
-    background-color: rgba(45, 52, 54, 0.8);
+    background-color: #2c3e50;
     color: white;
-    padding: 1.5rem;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+header h1 {
+    color: #ffffff;
+    margin: 0;
+    font-size: 1.5em;
+    flex-grow: 1;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.nav-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.nav-buttons button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.nav-buttons button:hover {
+    background-color: #ddd;
+}
+
+#switchButton {
+    float: right;
+    margin-top: 0.75%;
+    margin-right: 1%;
+    top: 1rem;
+    right: 1rem;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+#switchButton:hover {
+    background-color: #2980b9;
 }
 
 main {
     margin: 2rem auto;
     max-width: 800px;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 2rem;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+    background-color: white;
+    padding: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h1, h2 {
+h1 {
+    text-align: center;
+    font-size: 30px;
+    color: #2c3e50;
+} 
+h2 {
     color: #2c3e50;
 }
 
 form {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
-label {
-    margin-top: 0.5rem;
-    font-weight: bold;
-    color: #2d3436;
-}
-
-input, select {
-    padding: 0.75rem;
-    margin-top: 0.5rem;
+input, select, button {
+    padding: 0.5rem;
     border-radius: 5px;
-    border: 1px solid #b2bec3;
-    background-color: #dfe6e9;
+    border: 1px solid #ddd;
 }
 
 button {
-    background-color: #00b894;
+    background-color: #3498db;
     color: white;
-    padding: 0.75rem;
-    margin-top: 1rem;
-    border: none;
-    border-radius: 5px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
+    border: none;
 }
 
 button:hover {
-    background-color: #00cec9;
+    background-color: #2980b9;
 }
 
-.room-availability ul {
-    list-style-type: none;
-    padding: 0;
+.search-faculty {
+    margin-bottom: 2rem;
 }
 
-.room-availability li {
-    background-color: #dfe6e9;
-    padding: 1rem;
-    margin: 0.75rem 0;
-    border-radius: 8px;
+.availability-chart {
+    margin-bottom: 2rem;
+}
+
+.availability-chart #availabilityChart {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
 }
 
-#clearCheckins {
-    background-color: #d63031;
-    color: white;
-    padding: 0.75rem 1rem;
-    border: none;
-    cursor: pointer;
+.chart-bar {
+    background-color: #ecf0f1;
     border-radius: 5px;
-    margin-top: 1rem;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
+    padding: 1rem;
+    margin: 0.5rem;
+    width: 100%;
+    max-width: 200px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-#clearCheckins:hover {
-    background-color: #e17055;
+.bar-label {
+    font-weight: bold;
 }
 
-span {
-    font-size: 0.95rem;
-    color: #2d3436;
+.status-label {
+    margin-top: 0.5rem;
 }
 
+.available-label {
+    color: green;
+}
+
+.not-available-label {
+    color: red;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+th {
+    background-color: #3498db;
+    color: white;
+}
+
+.available {
+    color: green;
+    font-weight: bold;
+}
+
+.not-available {
+    color: red;
+    font-weight: bold;
+}
+
+.edit-button {
+    background-color: #f39c12;
+}
+
+.delete-button {
+    background-color: #e74c3c;
+}
+
+.edit-button:hover {
+    background-color: #e67e22;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+}
+
+.editable {
+    background-color: #f9f9f9;
+}
+
+.editable[contenteditable="false"] {
+    background-color: #ffffff;
+    cursor: not-allowed;
+}
+
+input.edit-field {
+    width: 100%;
+    border: none;
+    padding: 0.5rem;
+}
