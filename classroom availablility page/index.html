@@ -3,67 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCMS - Classroom Availability</title>
+    <title>Classroom Availability</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+    </style>
 </head>
 <body>
     <header>
-        <h1>Smart Classroom Management - Classroom Availability</h1>
+        <div class="logo">
+            <img src="../clogo.png" alt="Logo"> <!-- Replace 'logo.png' with your logo image file -->
+            <h1>Classroom Availability</h1>
+        </div>
+        <div class="nav-buttons">
+            <a href="#"><button>Button1</button></a>
+            <a href="#"><button>Button2</button></a>
+            <a href="#"><button>Button3</button></a>
+        </div>
     </header>
 
-    <main>
-        <!-- Check Availability Section -->
-        <section class="check-availability">
-            <h2>Check Classroom Availability</h2>
-            <form id="availabilityForm">
-                <label for="classroomNo.">Classroom No.:</label>
-                <input type="text" id="classroomNo" required>
+    <button id="switchButton">Switch to Admin View</button>
+    
+    <!-- User View -->
+    <main id="userView">
+        <section class="search-classroom">
+            <h1>Classroom Availability</h1>
+            <h2>Find Classroom</h2>
+            <input type="text" id="classroomSearchInput" placeholder="Enter Classroom Name">
+            <button id="searchButton">Search</button>
+            <p id="searchResult"></p>
+        </section>
 
-                <label for="bookingDate">Date:</label>
-                <input type="date" id="bookingDate" required>
-
-                <label for="bookingTime">Time:</label>
-                <input type="time" id="bookingTime" required>
-
-                <button type="submit">Check Availability</button>
-            </form>
-            <div id="availabilityResult">
-                <!-- Availability result will be shown here -->
+        <section class="availability-chart">
+            <h2>Availability Chart</h2>
+            <div id="availabilityChart">
+                <!-- Availability chart will be populated here -->
             </div>
+            <button id="showMoreChartButton" style="display: none;">Show More</button>
+            <button id="showLessChartButton" style="display: none;">Show Less</button>
         </section>
 
-        <!-- Book Classroom Section -->
-        <section class="book-classroom">
-            <h2>Book a Classroom</h2>
-            <form id="bookingForm">
-                <label for="bookerName">Name:</label>
-                <input type="text" id="bookerName" required>
-
-                <label for="bookerID">ID:</label>
-                <input type="text" id="bookerID" required>
-
-                <label for="classroomToBook">Classroom ID:</label>
-                <input type="text" id="classroomToBook" required>
-
-                <label for="bookingStart">Start Time:</label>
-                <input type="datetime-local" id="bookingStart" required>
-
-                <label for="bookingEnd">End Time:</label>
-                <input type="datetime-local" id="bookingEnd" required>
-
-                <button type="submit">Book Classroom</button>
-            </form>
-        </section>
-
-        <!-- View Bookings Section -->
-        <section class="view-bookings">
-            <h2>View All Bookings</h2>
-            <ul id="bookingList">
-                <!-- Bookings will be displayed here -->
-            </ul>
+        <section class="classroom-list">
+            <h2>Classroom List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Classroom Name</th>
+                        <th>Room Number</th>
+                    </tr>
+                </thead>
+                <tbody id="classroomTableBody">
+                    <!-- Classroom list will be populated here -->
+                </tbody>
+            </table>
+            <button id="showMoreListButton" style="display: none;">Show More</button>
+            <button id="showLessListButton" style="display: none;">Show Less</button>
         </section>
     </main>
 
-    <script src="classroom-script.js"></script>
+    <!-- Admin View -->
+    <main id="adminView" style="display: none;">
+        <section class="add-classroom">
+            <h2>Add Classroom</h2>
+            <form id="addClassroomForm">
+                <input type="text" id="newClassroomName" placeholder="Classroom Name" required>
+                <input type="text" id="newRoomNumber" placeholder="Room Number" required>
+                <select id="newAvailability" required>
+                    <option value="true">Available</option>
+                    <option value="false">Not Available</option>
+                </select>
+                <button type="submit">Add Classroom</button>
+            </form>
+        </section>
+
+        <section class="classroom-list">
+            <h2>Classroom List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Classroom Name</th>
+                        <th>Room Number</th>
+                        <th>Availability</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminClassroomTableBody">
+                    <!-- Admin classroom list will be populated here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
 </body>
 </html>

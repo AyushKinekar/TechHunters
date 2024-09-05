@@ -1,81 +1,207 @@
-/* styles.css */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+/* Basic Reset */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and General Styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 header {
-    background-color: #2c3e50;
-    color: white;
-    padding: 1rem;
-    text-align: center;
+    background: #333;
+    color: #fff;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+}
+
+header .logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+header .logo h1 {
+    font-size: 24px;
+}
+
+header .nav-buttons button {
+    background: #444;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+header .nav-buttons button:hover {
+    background: #555;
+}
+
+button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+button:hover {
+    background: #0056b3;
 }
 
 main {
-    margin: 2rem auto;
-    max-width: 800px;
-    background-color: white;
-    padding: 1rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
 }
 
-h1, h2 {
-    color: #2c3e50;
+/* User View Styles */
+#userView {
+    display: block;
 }
 
-form {
+.search-classroom, .availability-chart, .classroom-list {
+    margin-bottom: 20px;
+}
+
+.search-classroom h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.search-classroom h2 {
+    font-size: 22px;
+}
+
+.search-classroom input {
+    padding: 10px;
+    font-size: 16px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-classroom button {
+    margin-left: 10px;
+}
+
+.availability-chart {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.availability-chart .chart-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.availability-chart .status-label {
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+
+.available-label {
+    background: #28a745;
+    color: #fff;
+}
+
+.not-available-label {
+    background: #dc3545;
+    color: #fff;
+}
+
+.classroom-list {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.classroom-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.classroom-list th, .classroom-list td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.classroom-list th {
+    background: #f4f4f4;
+}
+
+.classroom-list button {
+    background: #17a2b8;
+}
+
+.classroom-list button:hover {
+    background: #138496;
+}
+
+/* Admin View Styles */
+#adminView {
+    display: none;
+}
+
+.add-classroom {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.add-classroom form {
     display: flex;
     flex-direction: column;
 }
 
-label {
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-input, select, button {
-    padding: 0.5rem;
-    margin-bottom: 1rem;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-button {
-    background-color: #3498db;
-    color: white;
-    cursor: pointer;
-    border: none;
-}
-
-button:hover {
-    background-color: #2980b9;
-}
-
-.resource-status ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.resource-status li {
-    background-color: #ecf0f1;
-    padding: 0.5rem;
-    margin: 0.5rem 0;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.resource-status button {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 0.5rem;
-    cursor: pointer;
+.add-classroom input, .add-classroom select {
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-.resource-status button:hover {
-    background-color: #c0392b;
+.add-classroom button {
+    background: #28a745;
+}
+
+.add-classroom button:hover {
+    background: #218838;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    header .nav-buttons {
+        margin-top: 10px;
+    }
+
+    .search-classroom input {
+        width: 100%;
+    }
 }

@@ -1,70 +1,225 @@
-// classroom-script.js
+const STORAGE_KEY = 'classrooms';
+let classrooms = loadClassrooms();
+let isAdminView = false;
+const initialShownItems = 5;
+let shownItemsCount = initialShownItems;
 
-document.addEventListener('DOMContentLoaded', function () {
-    const availabilityForm = document.getElementById('availabilityForm');
-    const bookingForm = document.getElementById('bookingForm');
-    const bookingList = document.getElementById('bookingList');
-    const availabilityResult = document.getElementById('availabilityResult');
+function loadClassrooms() {
+    const storedClassrooms = localStorage.getItem(STORAGE_KEY);
+    return storedClassrooms ? JSON.parse(storedClassrooms) : [
+        { name: "Room 101", available: true },
+        { name: "Room 102", available: false },
+        // Add more sample data as needed
+    ];
+}
 
-    const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+function saveClassrooms() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(classrooms));
+}
 
-    // Function to check availability
-    availabilityForm.addEventListener('submit', function (e) {
-        e.preventDefault();
+function renderClassroomListUser(classroomsToDisplay) {
+    const classroomTableBody = document.getElementById('classroomTableBody');
+    const showMoreListButton = document.getElementById('showMoreListButton');
+    const showLessListButton = document.getElementById('showLessListButton');
+    classroomTableBody.innerHTML = '';
 
-        const classroomID = document.getElementById('classroomID').value;
-        const bookingDate = document.getElementById('bookingDate').value;
-        const bookingTime = document.getElementById('bookingTime').value;
-        const bookingDateTime = new Date(`${bookingDate}T${bookingTime}`);
+    let displayedClassrooms = classroomsToDisplay.slice(0, shownItemsCount);
 
-        const isAvailable = bookings.every(booking => {
-            return booking.classroomID !== classroomID || 
-                   (booking.endTime <= bookingDateTime || booking.startTime >= bookingDateTime);
-        });
+    displayedClassrooms.forEach(renderClassroomRow);
 
-        if (isAvailable) {
-            availabilityResult.textContent = "Classroom is available.";
-            availabilityResult.style.color = "green";
-        } else {
-            availabilityResult.textContent = "Classroom is not available.";
-            availabilityResult.style.color = "red";
-        }
-    });
-
-    // Function to book a classroom
-    bookingForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const bookerName = document.getElementById('bookerName').value;
-        const bookerID = document.getElementById('bookerID').value;
-        const classroomID = document.getElementById('classroomToBook').value;
-        const bookingStart = new Date(document.getElementById('bookingStart').value);
-        const bookingEnd = new Date(document.getElementById('bookingEnd').value);
-
-        const newBooking = {
-            id: Date.now(),
-            name: bookerName,
-            userId: bookerID,
-            classroomID: classroomID,
-            startTime: bookingStart,
-            endTime: bookingEnd
-        };
-
-        bookings.push(newBooking);
-        localStorage.setItem('bookings', JSON.stringify(bookings));
-
-        // Render the new booking and clear form
-        renderBooking(newBooking);
-        bookingForm.reset();
-    });
-
-    // Function to render a booking
-    function renderBooking(booking) {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${booking.name} (ID: ${booking.userId}) booked Classroom ${booking.classroomID} from ${booking.startTime.toLocaleString()} to ${booking.endTime.toLocaleString()}`;
-        bookingList.appendChild(listItem);
+    if (classroomsToDisplay.length > shownItemsCount) {
+        showMoreListButton.style.display = 'block';
+    } else {
+        showMoreListButton.style.display = 'none';
     }
 
-    // Render all existing bookings
-    bookings.forEach(renderBooking);
+    if (shownItemsCount > initialShownItems) {
+        showLessListButton.style.display = 'block';
+    } else {
+        showLessListButton.style.display = 'none';
+    }
+}
+
+function renderClassroomRow(classroom) {
+    const classroomTableBody = document.getElementById('classroomTableBody');
+    const row = document.createElement('tr');
+    row.innerHTML = 
+        `<td>${classroom.name}</td>
+         <td>${classroom.room}</td>`;
+    classroomTableBody.appendChild(row);
+}
+
+function renderAvailabilityChart(classroomsToDisplay) {
+    const availabilityChart = document.getElementById('availabilityChart');
+    const showMoreChartButton = document.getElementById('showMoreChartButton');
+    const showLessChartButton = document.getElementById('showLessChartButton');
+    availabilityChart.innerHTML = '';
+
+    let displayedClassrooms = classroomsToDisplay.slice(0, shownItemsCount);
+
+    displayedClassrooms.forEach(renderChartBar);
+
+    if (classroomsToDisplay.length > shownItemsCount) {
+        showMoreChartButton.style.display = 'block';
+    } else {
+        showMoreChartButton.style.display = 'none';
+    }
+
+    if (shownItemsCount > initialShownItems) {
+        showLessChartButton.style.display = 'block';
+    } else {
+        showLessChartButton.style.display = 'none';
+    }
+}
+
+function renderChartBar(classroom) {
+    const availabilityChart = document.getElementById('availabilityChart');
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar';
+
+    bar.innerHTML = 
+        `<div class="bar-label">${classroom.name}</div>
+         <div class="status-label ${classroom.available ? 'available-label' : 'not-available-label'}">
+            ${classroom.available ? 'Available' : 'Not Available'}
+         </div>`;
+
+    availabilityChart.appendChild(bar);
+}
+
+function renderClassroomListAdmin() {
+    const adminClassroomTableBody = document.getElementById('adminClassroomTableBody');
+    adminClassroomTableBody.innerHTML = '';
+
+    classrooms.forEach((classroom, index) => {
+        const row = document.createElement('tr');
+        row.dataset.index = index; // Store the index in a data attribute
+        row.innerHTML = 
+            `<td contenteditable="false" class="editable">${classroom.name}</td>
+             <td contenteditable="false" class="editable">${classroom.room}</td>
+             <td>
+                <select class="availability-select" ${classroom.available ? 'disabled' : 'disabled'}>
+                    <option value="true" ${classroom.available ? 'selected' : ''}>Available</option>
+                    <option value="false" ${!classroom.available ? 'selected' : ''}>Not Available</option>
+                </select>
+             </td>
+             <td>
+                <button class="edit-button" onclick="enableEdit(this)">Edit</button>
+                <button class="delete-button" onclick="deleteClassroom(this)">Delete</button>
+                <button class="save-button" onclick="saveEdit(this)" style="display: none;">Save</button>
+             </td>`;
+        adminClassroomTableBody.appendChild(row);
+    });
+}
+
+function addClassroom(name, room, available) {
+    classrooms.push({ name, room, available: available === 'true' });
+    saveClassrooms();
+    renderClassroomListAdmin();
+    renderClassroomListUser(classrooms);
+    renderAvailabilityChart(classrooms);
+}
+
+function enableEdit(button) {
+    const row = button.closest('tr');
+    row.querySelectorAll('.editable').forEach(cell => {
+        cell.setAttribute('contenteditable', 'true');
+    });
+    row.querySelector('.availability-select').removeAttribute('disabled');
+    row.querySelector('.save-button').style.display = 'inline-block';
+    button.style.display = 'none';
+}
+
+function saveEdit(button) {
+    const row = button.closest('tr');
+    const index = row.dataset.index;
+
+    // Retrieve values from the row
+    const name = row.cells[0].textContent.trim();
+    const room = row.cells[1].textContent.trim();
+    const available = row.querySelector('.availability-select').value;
+
+    if (name && room) { // Ensure name and room are not empty
+        classrooms[index] = { name, room, available: available === 'true' };
+        saveClassrooms();
+        renderClassroomListAdmin();
+        renderClassroomListUser(classrooms);
+        renderAvailabilityChart(classrooms);
+    } else {
+        alert('Name and Room cannot be empty!');
+    }
+}
+
+function deleteClassroom(button) {
+    const row = button.closest('tr');
+    const index = row.dataset.index;
+
+    classrooms.splice(index, 1);
+    saveClassrooms();
+    renderClassroomListAdmin();
+    renderClassroomListUser(classrooms);
+    renderAvailabilityChart(classrooms);
+}
+
+function toggleView() {
+    isAdminView = !isAdminView;
+
+    const userView = document.getElementById('userView');
+    const adminView = document.getElementById('adminView');
+    const switchButton = document.getElementById('switchButton');
+
+    userView.style.display = isAdminView ? 'none' : 'block';
+    adminView.style.display = isAdminView ? 'block' : 'none';
+    switchButton.textContent = isAdminView ? 'Switch to User View' : 'Switch to Admin View';
+}
+
+function searchClassroom() {
+    const searchQuery = document.getElementById('classroomSearchInput').value.toLowerCase();
+    const filteredClassrooms = classrooms.filter(classroom =>
+        classroom.name.toLowerCase().includes(searchQuery)
+    );
+
+    renderClassroomListUser(filteredClassrooms);
+    renderAvailabilityChart(filteredClassrooms);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    renderClassroomListUser(classrooms);
+    renderAvailabilityChart(classrooms);
+    renderClassroomListAdmin();
+
+    document.getElementById('switchButton').addEventListener('click', toggleView);
+
+    document.getElementById('showMoreListButton').addEventListener('click', function() {
+        shownItemsCount += 5;
+        renderClassroomListUser(classrooms);
+        renderAvailabilityChart(classrooms);
+    });
+
+    document.getElementById('showLessListButton').addEventListener('click', function() {
+        shownItemsCount = Math.max(initialShownItems, shownItemsCount - 5);
+        renderClassroomListUser(classrooms);
+        renderAvailabilityChart(classrooms);
+    });
+
+    document.getElementById('showMoreChartButton').addEventListener('click', function() {
+        shownItemsCount += 5;
+        renderAvailabilityChart(classrooms);
+    });
+
+    document.getElementById('showLessChartButton').addEventListener('click', function() {
+        shownItemsCount = Math.max(initialShownItems, shownItemsCount - 5);
+        renderAvailabilityChart(classrooms);
+    });
+
+    document.getElementById('addClassroomForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('newClassroomName').value;
+        const room = document.getElementById('newRoomNumber').value;
+        const available = document.getElementById('newAvailability').value;
+        addClassroom(name, room, available);
+        e.target.reset();
+    });
+
+    document.getElementById('searchButton').addEventListener('click', searchClassroom);
+    document.getElementById('classroomSearchInput').addEventListener('input', searchClassroom);
 });
