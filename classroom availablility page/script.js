@@ -7,8 +7,8 @@ let shownItemsCount = initialShownItems;
 function loadClassrooms() {
     const storedClassrooms = localStorage.getItem(STORAGE_KEY);
     return storedClassrooms ? JSON.parse(storedClassrooms) : [
-        { name: "Room 101", available: true },
-        { name: "Room 102", available: false },
+        { name: "Room A", room: "101", available: true },
+        { name: "Room B", room: "102", available: false },
         // Add more sample data as needed
     ];
 }
