@@ -1,0 +1,140 @@
+/* Base Styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #0d0808;
+    color: #333;
+}
+
+/* Header */
+header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+}
+/* Base styles */
+
+body {
+    
+    font-family: Arial, sans-serif;
+}
+.logo {
+    width: 80px; /* Adjust the width as needed */
+    height: 800px;
+    height: auto; /* Keeps the aspect ratio */
+    display: outside;
+    
+    margin-left: 60px; /* Adds space between the logo and the heading */
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Aligns content to the left */
+    padding: 10px;
+    gap: 100px;
+}
+
+
+
+/* Dashboard styles */
+.dashboard {
+    position: fixed;
+    left: -300px; /* Hide by default, adjust width as needed */
+    top: 0;
+    width: 225px; /* Adjust width as needed */
+    height: 100%;
+    background-color: rgb(246, 244, 244);
+    border-right: 2px solid rgb(246, 244, 244);
+    transition: left 0.3s ease;
+    padding: 20px;
+    z-index: 1000;
+}
+
+
+/* Show dashboard */
+.dashboard.show {
+    left: 0;
+}
+
+/* Dashboard toggle button styles */
+.dashboard-toggle {
+    position: sticky;
+    left: 10px;
+    top: 10px;
+    z-index: 1001;
+}
+
+/* Dashboard close button styles */
+.dashboard-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.btn-primary:hover{
+    background-color: rgb(47, 162, 47);
+}
+
+.btn-secondary:hover{
+    background-color: rgb(115, 109, 109);
+
+}
+
+/* Main Content Styles */
+main {
+    padding: 20px;
+    margin-right: 0;
+    transition: margin-right 0.3s ease;
+}
+
+/* Resource Allocation Section */
+.resource-allocation {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+button[type="submit"], .btn-secondary {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    color: white;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.btn-primary {
+    background-color: #28a745;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}

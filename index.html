@@ -1,156 +1,243 @@
 <!DOCTYPE html>
+<!-- Template by Quackit.com -->
+<!-- Images by various sources under the Creative Commons CC0 license and/or the Creative Commons Zero license. 
+Although you can use them, for a more unique website, replace these images with your own. -->
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCMS - Resource Management</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Add styles to make the dashboard visible when toggled */
-        .dashboard {
-            display: none;
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 250px;
-            height: 100%;
-            background-color: #f8f8f8;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            padding: 20px;
-            overflow-y: auto;
-        }
 
-        .dashboard.show {
-            display: block;
-        }
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-        .dashboard-toggle {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background-color: #11386b;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-        }
+    <title>Business 2</title>
 
-        .dashboard-close {
-            background-color: #11386b;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
+    <!-- Bootstrap Core CSS -->
+    <link href="bootstrap.min.css" rel="stylesheet">
 
-        /* Centering the resource-allocation section */
-        main {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
-            margin: 0;
-        }
+    <!-- Custom CSS: You can use this stylesheet to override any Bootstrap styles and/or apply your own styles -->
+    <link href="custom.css" rel="stylesheet">
 
-        .resource-allocation {
-            background-color: #f0f0f0;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 50px; /* Adjusted to move the box lower */
-        }
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
-        .btn-primary, .btn-secondary {
-            margin-top: 10px;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background-color: #11386b;
-            color: white;
-        }
-
-        .btn-secondary {
-            background-color: #e0e0e0;
-            color: black;
-        }
-
-        /* Adjusting the size of the logo */
-        .logo {
-            width: 100px;
-            height: auto;
-        }
-    </style>
+    <!-- Custom Fonts from Google -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    
 </head>
+
 <body>
+
+    <!-- Navigation -->
+    <nav id="siteNav" class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Logo and responsive toggle -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">
+                	<span><img src="images/logo5.png" width="30"></span> 
+                	TechHunters
+                </a>
+            </div>
+            <!-- Navbar links -->
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active">
+                        <a href="#">Home</a>
+                    </li>
+                    <li>
+                        <a href="Team/team.html">Team</a>
+                    </li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Services <span class="caret"></span></a>
+						<ul class="dropdown-menu" aria-labelledby="about-us">
+							<li><a href="Classroom Availablility/index.html">Classroom</a></li>
+							<li><a href="Faculty Availability/index.html">Faculty</a></li>
+							<li><a href="Lab Occupancy/index.html">Lab</a></li>
+							<li><a href="Resource Management/index.html">Resource</a></li>
+						</ul>
+					</li>
+                </ul>
+                
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container -->
+    </nav>
+
+	<!-- Header -->
     <header>
-        <img src="../Logo.png" alt="Logo" class="logo">
-        <h1>Smart Classroom Management - Resource Management</h1>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1>TechHunters</h1>
+                <p>“Classroom management is focused on control. But we don't control people, we lead them."</p>
+                            </div>
+        </div>
     </header>
 
-    <!-- Dashboard Toggle Button -->
-    <button id="dashboardToggle" class="dashboard-toggle">☰</button>
-
-    <!-- Dashboard Section -->
-    <section id="dashboard" class="dashboard">
-        <button id="dashboardClose" class="dashboard-close">✖</button>
-        <h2>Dashboard</h2>
-        <ul>
-            <li><strong>Office Email:</strong> 
-                <a href="mailto:helpdesk@dypiu.ac.in">helpdesk@dypiu.ac.in</a>
-            </li>
-            <li><strong>About Us:</strong> 
-                <a href="team.html" target="_blank">Click Here</a>
-            </li>
-        </ul>
+	<!-- Intro Section -->
+    <section class="intro">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                	<img class="img-responsive img-circle center-block" src="images/Smart Room Logo.png" alt="" width="50" height="50"><br>
+                    <h2 class="section-heading">Smart Classroom Management Software for Enhanced Learning Environments</h2>
+                    <p class="text-light">In modern educational settings, managing classrooms efficiently while ensuring a conducive learning environment is crucial. Traditional methods of classroom management are often manual, time-consuming, and prone to human error, which can disrupt the learning process.Explore the resources available and see how our spaces can elevate your educational experience. </p>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <main>
-        <!-- Resource Allocation Section -->
-        <section class="resource-allocation">
-            <h2>Allocate Resources</h2>
-            <form id="resourceForm">
-                <div class="form-group">
-                    <label for="userName">Name:</label>
-                    <input type="text" id="userName" required>
+	<!-- Content 1 -->
+    <section class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <img class="img-responsive img-circle center-block" src="images/Booked Resources1.jpg" alt="">
                 </div>
+                <div class="col-sm-6">
+                	<h2 class="section-header">BOOK RESOURCES</h2>
+                	<p class="lead text-muted"> Efficient resource management is crucial for optimizing classroom environments and enhancing the learning experience. Our centralized software platform streamlines the tracking and usage of essential teaching aids, such as projectors, computers, and other classroom resources. </p>
+                	<a href="Resource Management/index.html" class="btn btn-primary btn-lg">Resources</a>
+                </div>                
+                
+            </div>
+        </div>
+    </section>
 
-                <div class="form-group">
-                    <label for="userID">ID:</label>
-                    <input type="text" id="userID" required>
+	<!-- Content 2 -->
+     <section class="content content-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                	<h2 class="section-header">BOOK LABS</h2>
+                	<p class="lead text-light">Our laboratories are equipped with the latest stechnology and tools, providing hands-on opportunities for students to conduct experiments and explore their field of study.</p>
+                	<a href="Lab Occupancy/index.html" class="btn btn-default btn-lg">Lab</a>
+                </div>    
+                <div class="col-sm-6">
+                    <img class="img-responsive img-circle center-block" src="images/Booked Labs.jpg" alt="">
+                </div>            
+            </div>
+        </div>
+    </section> 
+    <!-- Content 3 -->
+    <section class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <img class="img-responsive img-circle center-block" src="images/Booked Faculties1.jpg" alt="">
                 </div>
+                <div class="col-sm-6">
+                	<h2 class="section-header">FIND FACULTY</h2>
+                	<p class="lead text-muted"> Our platform is designed to empower students by providing them with easy access to their faculty members and office locations, facilitating personalized assistance and meaningful interactions. </p>
+                	<a href="Resource Management/index.html" class="btn btn-primary btn-lg">Faculty</a>
+                </div>                
+                
+            </div>
+        </div>
+    </section>
+    <!-- Content 4 -->
+    <section class="content content-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                	<h2 class="section-header">BOOK LECTURE HALL  </h2>
+                	<p class="lead text-light">Our modern lecture halls, featuring comfortable seating and interactive learning environments, foster collaboration and engagement.  </p>
+                	<a href="Classroom Availablility/index.html" class="btn btn-default btn-lg">Lecture Hall</a>
+                </div>    
+                <div class="col-sm-6">
+                    <img class="img-responsive img-circle center-block" src="images/Booked Lecture Hall1.jpg" alt="">
+                </div>            
+                
+            </div>
+        </div>
+    </section> 
 
-                <div class="form-group">
-                    <label for="resourceType">Resource Type:</label>
-                    <select id="resourceType">
-                        <option value="projector">Projector</option>
-                        <option value="laptop">Laptop</option>
-                        <option value="whiteboard">Whiteboard</option>
-                        <option value="mike">Mike</option>
-                    </select>
-                </div>
+   
 
-                <div class="form-group">
-                    <label for="resourceCount">Number of Resources:</label>
-                    <input type="number" id="resourceCount" min="1" max="10" value="1" required>
-                </div>
 
-                <button type="submit" class="btn-primary">Allocate Resource</button>
-                <button type="button" id="downloadData" class="btn-secondary">Download Data as Text File</button>
-            </form>
-            <h3>Action Log</h3>
-            <ul id="logList">
-                <!-- Logs will be shown here -->
-            </ul>
-            <button id="clearLog" class="btn-secondary">Clear Log</button>
-        </section>
-    </main>
+    <!-- Promos -->
+	<!-- <div class="container-fluid">
+        <div class="row promo">
+        	<a href="#">
+				<div class="col-md-4 promo-item item-1">
+					<h3>
+						RESOURCES				</h3>
+				</div>
+            </a>
+            <a href="#">
+				<div class="col-md-4 promo-item item-2">
+					<h3>
+						CLASSROOMS				</h3>
+				</div>
+            </a>
+			<a href="#">
+				<div class="col-md-4 promo-item item-3">
+					<h3>
+						FACULTY					</h3>
+				</div>
+            <a href="#">
+				<div style="text-align: center" class="col-md-4 promo-item item-4">
+					<h3>
+						LABS					</h3>
+				</div> 
+                
+                
+</div>-->
+            
+    </div><!-- /.container-fluid -->
 
-    <script src="script.js"></script>
+	<!-- Content 3 -->
+     <section class="contfile:///C:/Users/Varun%20Lonkar/OneDrive/Desktop/ayush/template/business-2/index.html#ent content-3">
+        <div class="container">
+			<h2 class="section-header">
+                <img class="img-responsive img-circle center-block" src="images/Scms.jpg" alt="" width="200">
+                <br> (SCMS)</h2>
+			<p class="lead text-muted">The Smart Classroom Management Software (SCMS) demonstrating the above features through the integration of advanced algorithms, data analytics, and cloud-based technologic. A user-friendly interface for students, teachers and administrators to interact with the system and access reports.</p> 
+                    <a href="#" class="btn btn-primary btn-lg">Check Now</a> <br><br>              
+            </div>
+        </div>
+    
+	<!-- Footer -->
+    <footer class="page-footer">    
+    	<!-- Contact Us -->
+        <div class="contact">
+        	<div class="container">
+				<h2 class="section-heading">Contact Us</h2>
+				<p><span class="glyphicon glyphicon-earphone"></span><br> +1(23) 456 7890</p>
+				<p><span class="glyphicon glyphicon-envelope"></span><br> info@dypiu.ac.in</p>
+        	</div>
+        </div>
+        	
+        <!-- Copyright etc -->
+        <div class="small-print">
+        	<div class="container">
+        		<p>TechHunters</p>
+        	</div>
+        </div>
+        
+    </footer>
+
+    <!-- jQuery -->
+    <script src="jquery-1.11.3.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="jquery.easing.min.js"></script>
+    
+    <!-- Custom Javascript -->
+    <script src="custom.js"></script>
+
 </body>
+
 </html>

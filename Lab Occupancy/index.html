@@ -5,68 +5,332 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Occupancy Management</title>
     <link rel="stylesheet" href="styles.css">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getDatabase, ref, set, get, update, remove } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQ_ZksLUIiSvlLh-ebM5mlEmOTD6QAPxg",
+            authDomain: "techhunter-9b7c5.firebaseapp.com",
+            databaseURL: "https://techhunter-9b7c5-default-rtdb.firebaseio.com",
+            projectId: "techhunter-9b7c5",
+            storageBucket: "techhunter-9b7c5.appspot.com",
+            messagingSenderId: "969801209943",
+            appId: "1:969801209943:web:3bdf834868d13b7c02ab12",
+            measurementId: "G-4XKR35QGKW"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const database = getDatabase(app);
+
+        window.database = database; // Expose database to global scope for use in scripts
+    </script>
 </head>
 <body>
     <header>
         <h1>Lab Occupancy Management</h1>
     </header>
+
+    <!-- Button to toggle admin mode -->
+    <div class="admin-toggle-container">
+        <button id="adminModeButton" class="admin-mode-button">Admin Mode</button>
+    </div>
     
     <main>
-        <!-- Lab Management Section -->
-        <section class="lab-management">
-            <h2>Manage Labs</h2>
+        <!-- User Section -->
+        <section class="user-section">
+            <h2>User - Book or Leave a Lab</h2>
+            <form id="bookingForm">
+                <label for="labSelect">Select a Lab/Room:</label>
+                <select id="labSelect" required>
+                    <option value="" disabled selected>Select a Lab</option>
+                    <!-- Lab options will be populated here -->
+                </select>
+
+                <label for="occupantName" id="occupantLabel">Occupied By:</label>
+                <input type="text" id="occupantName" placeholder="Enter your name" disabled>
+
+                <button type="submit">Book Lab</button>
+            </form>
+
+            <section class="booking-confirmation" id="confirmationMessage">
+                <!-- Confirmation message will appear here -->
+            </section>
+
+            <section class="availability-chart">
+                <h2>Lab Availability Chart</h2>
+                <table id="availabilityTable">
+                    <thead>
+                        <tr>
+                            <th>Lab/Room Number</th>
+                            <th>Status</th>
+                            <th>Occupied By</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Lab availability data will appear here -->
+                    </tbody>
+                </table>
+            </section>
+        </section>
+
+        <!-- Admin Section -->
+        <section class="admin-section" id="adminSection">
+            <h2>Admin - Manage Labs</h2>
             <form id="labForm">
                 <label for="labNumber">Lab/Room Number:</label>
                 <input type="text" id="labNumber" required>
 
-                <label for="labStatus">Status:</label>
-                <select id="labStatus">
-                    <option value="occupied">Occupied</option>
-                    <option value="unoccupied" selected>Unoccupied</option>
-                </select>
-
-                <!-- Occupied By input is now always visible -->
-                <label for="occupantName">Occupied By:</label>
-                <input type="text" id="occupantName" disabled> <!-- Initially disabled -->
-
-                <button type="submit">Update Status</button>
+                <button type="submit">Update Lab</button>
+                <button type="button" id="deleteLabButton">Delete Lab</button>
             </form>
-        </section>
-
-        <!-- Occupied Labs Section -->
-        <section class="occupied-labs">
-            <h2>Occupied Labs</h2>
-            <ul id="occupiedList">
-                <!-- List of occupied labs will appear here -->
-            </ul>
-        </section>
-
-        <!-- Unoccupied Labs Section -->
-        <section class="unoccupied-labs">
-            <h2>Unoccupied Labs</h2>
-            <ul id="unoccupiedList">
-                <!-- List of unoccupied labs will appear here -->
-            </ul>
-        </section>
-
-        <!-- Availability Chart Section -->
-        <section class="availability-chart">
-            <h2>Lab Availability Chart</h2>
-            <table id="availabilityTable">
-                <thead>
-                    <tr>
-                        <th>Lab/Room Number</th>
-                        <th>Status</th>
-                        <th>Occupied By</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Lab availability data will appear here -->
-                </tbody>
-            </table>
         </section>
     </main>
 
-    <script src="script.js"></script>
+    <script type="module">
+        import { getDatabase, ref, set, get, update, remove } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+    
+        document.addEventListener('DOMContentLoaded', function () {
+            const bookingForm = document.getElementById('bookingForm');
+            const labSelect = document.getElementById('labSelect');
+            const occupantNameInput = document.getElementById('occupantName');
+            const confirmationMessage = document.getElementById('confirmationMessage');
+            const availabilityTableBody = document.getElementById('availabilityTable').querySelector('tbody');
+            const labForm = document.getElementById('labForm');
+            const deleteLabButton = document.getElementById('deleteLabButton');
+            const adminModeButton = document.getElementById('adminModeButton');
+            const adminSection = document.getElementById('adminSection');
+    
+            // Initialize Firebase Realtime Database
+            const database = getDatabase(); // Initialize the database
+    
+            // Fetch and populate labs from Firebase
+            function fetchLabs() {
+                const labsRef = ref(database, 'labs');
+                get(labsRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const storedLabs = snapshot.val();
+                        populateLabSelect(storedLabs);
+                        renderAvailabilityChart(storedLabs);
+                    } else {
+                        console.log("No data available");
+                    }
+                }).catch((error) => {
+                    console.error("Error fetching data: ", error);
+                });
+            }
+    
+            // Populate the lab selection dropdown with only unoccupied labs
+            function populateLabSelect(labs) {
+                labSelect.innerHTML = '<option value="" disabled selected>Select a Lab</option>'; // Set default option
+    
+                Object.values(labs).forEach(lab => {
+                    if (lab.status === 'unoccupied') {
+                        const option = document.createElement('option');
+                        option.value = lab.number;
+                        option.textContent = lab.number;
+                        labSelect.appendChild(option);
+                    }
+                });
+            }
+    
+            function renderAvailabilityChart(FacultysToDisplay) {
+            const availabilityChart = document.getElementById('availabilityChart');
+            const showMoreChartButton = document.getElementById('showMoreChartButton');
+            const showLessChartButton = document.getElementById('showLessChartButton');
+            availabilityChart.innerHTML = '';
+    
+            let displayedFacultys = FacultysToDisplay.slice(0, shownItemsCount);
+    
+            displayedFacultys.forEach(Faculty => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.innerHTML = 
+                    `<div class="bar-label">${Faculty.name}</div>
+                     <div class="status-label ${Faculty.available ? 'available-label' : 'not-available-label'}">
+                        ${Faculty.available ? 'Available' : 'Not Available'}
+                     </div>`;
+                availabilityChart.appendChild(bar);
+            });
+    
+            showMoreChartButton.style.display = FacultysToDisplay.length > shownItemsCount ? 'block' : 'none';
+            showLessChartButton.style.display = shownItemsCount > initialShownItems ? 'block' : 'none';
+        }
+            
+            // Populate the availability chart
+            function renderAvailabilityChart(labs) {
+                availabilityTableBody.innerHTML = ''; // Clear existing rows
+    
+                Object.values(labs).forEach(lab => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = 
+                        `<td>${lab.number}</td>
+                        <td>${lab.status ? lab.status.charAt(0).toUpperCase() + lab.status.slice(1) : 'Unoccupied'}</td>
+                        <td>${lab.occupant ? lab.occupant : '-'}</td>
+                        <td>${lab.status === 'occupied' ? '<button class="leave-lab-button" data-lab-number="' + lab.number + '">Leave Lab</button>' : ''}</td>`;
+                    availabilityTableBody.appendChild(row);
+                });
+    
+                // Add event listeners for the "Leave Lab" buttons
+                const leaveLabButtons = document.querySelectorAll('.leave-lab-button');
+                leaveLabButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        leaveLab(button.getAttribute('data-lab-number'));
+                    });
+                });
+            }
+    
+            // Enable "Occupied By" input whenever a lab is selected
+            labSelect.addEventListener('change', function () {
+                occupantNameInput.disabled = false; // Enable the "Occupied By" input
+            });
+    
+            // Handle lab booking
+            bookingForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const selectedLabNumber = labSelect.value;
+                const occupantName = occupantNameInput.value.trim();
+    
+                if (!selectedLabNumber) {
+                    alert('Please select a lab.');
+                    return;
+                }
+    
+                if (!occupantName) {
+                    alert('Please enter your name.');
+                    occupantNameInput.focus(); // Focus on the input field
+                    return;
+                }
+    
+                const labRef = ref(database, 'labs/' + selectedLabNumber);
+                get(labRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const lab = snapshot.val();
+                        if (lab.status === 'unoccupied') {
+                            // Update the lab status to occupied
+                            update(labRef, {
+                                status: 'occupied',
+                                occupant: occupantName
+                            }).then(() => {
+                                confirmationMessage.innerHTML = `<p>Lab ${selectedLabNumber} has been successfully booked.</p>`;
+                                fetchLabs(); // Re-fetch and update
+                            }).catch((error) => {
+                                console.error("Error updating lab: ", error);
+                            });
+                        } else {
+                            confirmationMessage.innerHTML = `<p>Lab ${selectedLabNumber} is already occupied.</p>`;
+                        }
+                    } else {
+                        confirmationMessage.innerHTML = `<p>Lab ${selectedLabNumber} is not available.</p>`;
+                    }
+                }).catch((error) => {
+                    console.error("Error fetching lab: ", error);
+                });
+            });
+    
+            // Handle leaving a lab
+            function leaveLab(labNumber) {
+                const labRef = ref(database, 'labs/' + labNumber);
+                get(labRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const lab = snapshot.val();
+                        if (lab.status === 'occupied') {
+                            // Update the lab status to unoccupied
+                            update(labRef, {
+                                status: 'unoccupied',
+                                occupant: null
+                            }).then(() => {
+                                confirmationMessage.innerHTML = `<p>Lab ${labNumber} has been successfully left and is now available.</p>`;
+                                fetchLabs(); // Re-fetch and update
+                            }).catch((error) => {
+                                console.error("Error updating lab: ", error);
+                            });
+                        }
+                    }
+                }).catch((error) => {
+                    console.error("Error fetching lab: ", error);
+                });
+            }
+    
+            // Handle lab management
+            labForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+    
+                const labNumber = document.getElementById('labNumber').value.trim();
+    
+                // Validate labNumber
+                if (!labNumber) {
+                    alert('Lab/Room Number is required.');
+                    return;
+                }
+    
+                const labRef = ref(database, 'labs/' + labNumber);
+                get(labRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        // Update existing lab
+                        update(labRef, {
+                            number: labNumber,
+                            status: 'unoccupied'
+                        }).then(() => {
+                            fetchLabs(); // Re-fetch and update
+                            labForm.reset();
+                        }).catch((error) => {
+                            console.error("Error updating lab: ", error);
+                        });
+                    } else {
+                        // Add new lab
+                        set(labRef, {
+                            number: labNumber,
+                            status: 'unoccupied'
+                        }).then(() => {
+                            fetchLabs(); // Re-fetch and update
+                            labForm.reset();
+                        }).catch((error) => {
+                            console.error("Error adding lab: ", error);
+                        });
+                    }
+                }).catch((error) => {
+                    console.error("Error fetching lab: ", error);
+                });
+            });
+    
+            // Handle lab deletion
+            deleteLabButton.addEventListener('click', function () {
+                const labNumber = document.getElementById('labNumber').value.trim();
+    
+                if (!labNumber) {
+                    alert('Lab/Room Number is required.');
+                    return;
+                }
+    
+                const labRef = ref(database, 'labs/' + labNumber);
+                remove(labRef).then(() => {
+                    fetchLabs(); // Re-fetch and update
+                    labForm.reset();
+                }).catch((error) => {
+                    console.error("Error deleting lab: ", error);
+                });
+            });
+    
+            // Toggle admin mode
+            adminModeButton.addEventListener('click', function () {
+                if (adminSection.style.display === 'none' || !adminSection.style.display) {
+                    adminSection.style.display = 'block';
+                    adminModeButton.textContent = 'User Mode';
+                } else {
+                    adminSection.style.display = 'none';
+                    adminModeButton.textContent = 'Admin Mode';
+                }
+            });
+    
+            // Initial population of the lab select dropdown and availability chart
+            fetchLabs();
+        });
+    </script>
+    
+    
 </body>
 </html>

@@ -5,23 +5,293 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SCMS - Resource Management</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+
+    <!-- Firebase integration -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+      import { getDatabase, ref, set, get, update, remove } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBQ_ZksLUIiSvlLh-ebM5mlEmOTD6QAPxg",
+        authDomain: "techhunter-9b7c5.firebaseapp.com",
+        databaseURL: "https://techhunter-9b7c5-default-rtdb.firebaseio.com",
+        projectId: "techhunter-9b7c5",
+        storageBucket: "techhunter-9b7c5.appspot.com",
+        messagingSenderId: "969801209943",
+        appId: "1:969801209943:web:3bdf834868d13b7c02ab12",
+        measurementId: "G-4XKR35QGKW"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
+
+      document.addEventListener('DOMContentLoaded', function () {
+          // User Page Elements
+          const resourceForm = document.getElementById('resourceForm');
+          const resourceList = document.getElementById('resourceList');
+          const downloadDataButton = document.getElementById('downloadData');
+          const logList = document.getElementById('logList');
+          const clearLogButton = document.getElementById('clearLog');
+          const resourceNameSelect = document.getElementById('resourceName');
+
+          // Admin Page Elements
+          const addResourceForm = document.getElementById('addResourceForm');
+          const adminResourceList = document.getElementById('adminResourceList');
+          const resourceNameAdminInput = document.getElementById('resourceNameAdmin');
+
+          // State Management
+          const storedResourcesRef = ref(database, 'resources');
+          const adminResourcesRef = ref(database, 'adminResources');
+          const actionLogsRef = ref(database, 'logs');
+          const resourceQuantitiesRef = ref(database, 'resourceQuantities');
+
+          function updateUI() {
+              get(storedResourcesRef).then((snapshot) => {
+                  if (snapshot.exists()) {
+                      const storedResources = snapshot.val();
+                      Object.values(storedResources).forEach(renderResourceUser);
+                  }
+              });
+
+              get(adminResourcesRef).then((snapshot) => {
+                  if (snapshot.exists()) {
+                      const adminResources = snapshot.val();
+                      Object.values(adminResources).forEach(renderResourceAdmin);
+                  }
+              });
+
+              get(actionLogsRef).then((snapshot) => {
+                  if (snapshot.exists()) {
+                      const actionLogs = snapshot.val();
+                      Object.values(actionLogs).forEach(renderLog);
+                  }
+              });
+
+              get(resourceQuantitiesRef).then((snapshot) => {
+                  if (snapshot.exists()) {
+                      const resourceQuantities = snapshot.val();
+                      populateResourceNames(resourceQuantities);
+                  }
+              });
+          }
+
+          updateUI();
+
+          // User Page
+          resourceForm.addEventListener('submit', function (e) {
+              e.preventDefault();
+              const userName = document.getElementById('userName').value;
+              const userID = document.getElementById('userID').value;
+              const resourceName = document.getElementById('resourceName').value;
+              const resourceCount = parseInt(document.getElementById('resourceCount').value, 10);
+
+              // Check if the requested quantity is available
+              get(resourceQuantitiesRef).then((snapshot) => {
+                  const resourceQuantities = snapshot.val();
+                  if (resourceQuantities[resourceName] < resourceCount) {
+                      alert('Not enough resources available.');
+                      return;
+                  }
+
+                  const allocationTime = new Date().toISOString();
+                  const resource = {
+                      id: Date.now(),
+                      name: userName,
+                      userId: userID,
+                      type: resourceName,
+                      count: resourceCount,
+                      allocatedAt: allocationTime,
+                      returnedAt: null
+                  };
+
+                  set(ref(database, `resources/${resource.id}`), resource);
+
+                  // Update the available quantity
+                  update(ref(database, `resourceQuantities/${resourceName}`), {
+                      quantity: resourceQuantities[resourceName] - resourceCount
+                  });
+
+                  const logEntry = `Allocated ${resource.count} x ${resource.type}(s) to ${resource.name} (ID: ${resource.userId}) at ${allocationTime}`;
+                  logAction(logEntry);
+
+                  renderResourceUser(resource);
+                  resourceForm.reset();
+              });
+          });
+
+          function renderResourceUser(resource) {
+              if (resource.returnedAt) return;
+
+              const listItem = document.createElement('li');
+              const allocationDate = new Date(resource.allocatedAt);
+              let resourceInfo = `<strong>${resource.name} (ID: ${resource.userId})</strong> - Allocated: ${resource.count} x ${resource.type}  `;
+              
+              const returnButton = document.createElement('button');
+              returnButton.textContent = 'Return';
+              returnButton.addEventListener('click', function () {
+                  resource.returnedAt = new Date().toISOString();
+                  set(ref(database, `resources/${resource.id}`), resource);
+
+                  // Update the available quantity
+                  get(resourceQuantitiesRef).then((snapshot) => {
+                      const resourceQuantities = snapshot.val();
+                      update(ref(database, `resourceQuantities/${resource.type}`), {
+                          quantity: resourceQuantities[resource.type] + resource.count
+                      });
+                  });
+
+                  const logEntry = `Returned ${resource.count} x ${resource.type}(s) by ${resource.name} (ID: ${resource.userId}) at ${new Date().toISOString()}`;
+                  logAction(logEntry);
+
+                  listItem.remove();
+              });
+
+              listItem.innerHTML = resourceInfo;
+              listItem.appendChild(returnButton);
+              resourceList.appendChild(listItem);
+          }
+
+          function logAction(actionText) {
+              const logEntry = { text: actionText, timestamp: new Date().toISOString() };
+              set(ref(database, `logs/${Date.now()}`), logEntry)
+              .then(() => {
+                  console.log('Log entry saved:', logEntry);
+              })
+              .catch((error) => {
+                  console.error('Error saving log entry:', error);
+              });
+              renderLog(logEntry);
+          }
+
+          function renderLog(logEntry) {
+              const logItem = document.createElement('li');
+              logItem.textContent = `${logEntry.text} [${new Date(logEntry.timestamp).toLocaleString()}]`;
+              logList.appendChild(logItem);
+          }
+
+          clearLogButton.addEventListener('click', function () {
+              remove(ref(database, 'logs'))
+              .then(() => {
+                  console.log('Logs cleared');
+              })
+              .catch((error) => {
+                  console.error('Error clearing logs:', error);
+              });
+              logList.innerHTML = '';
+          });
+
+          downloadDataButton.addEventListener('click', function () {
+              get(storedResourcesRef).then((snapshot) => {
+                  let textContent = "Allocated Resources:\n";
+                  if (snapshot.exists()) {
+                      const storedResources = snapshot.val();
+                      Object.values(storedResources).forEach(resource => {
+                          const allocationDate = new Date(resource.allocatedAt);
+                          let resourceLine = `Name: ${resource.name}, ID: ${resource.userId}, Resource: ${resource.count} x ${resource.type}, Allocated At: ${allocationDate.toLocaleString()}\n`;
+                          textContent += resourceLine;
+                      });
+
+                      const blob = new Blob([textContent], { type: 'text/plain' });
+                      const url = window.URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'allocated_resources.txt';
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                  }
+              });
+          });
+
+          // Admin Page
+          addResourceForm.addEventListener('submit', function (e) {
+              e.preventDefault();
+
+              const resourceNameAdmin = document.getElementById('resourceNameAdmin').value;
+              const resourceQuantity = parseInt(document.getElementById('resourceQuantity').value, 10);
+
+              const resource = {
+                  name: resourceNameAdmin,
+                  quantity: resourceQuantity,
+              };
+
+              set(ref(database, `adminResources/${resourceNameAdmin}`), resource);
+
+              // Update the available quantity for this resource
+              get(resourceQuantitiesRef).then((snapshot) => {
+                  const resourceQuantities = snapshot.val();
+                  update(ref(database, `resourceQuantities/${resourceNameAdmin}`), {
+                      quantity: (resourceQuantities[resourceNameAdmin] || 0) + resourceQuantity
+                  });
+              });
+
+              renderResourceAdmin(resource);
+              addResourceForm.reset();
+          });
+
+          function renderResourceAdmin(resource) {
+              const listItem = document.createElement('li');
+              listItem.textContent = `${resource.name}: ${resource.quantity}`;
+              adminResourceList.appendChild(listItem);
+          }
+
+          function populateResourceNames(resourceQuantities) {
+              resourceNameSelect.innerHTML = '';
+              Object.keys(resourceQuantities).forEach(resourceName => {
+                  const option = document.createElement('option');
+                  option.value = resourceName;
+                  option.textContent = `${resourceName} (${resourceQuantities[resourceName]} available)`;
+                  resourceNameSelect.appendChild(option);
+              });
+          }
+
+          // Page Switching
+          const toggleAdminButton = document.getElementById('toggleAdmin');
+          const toggleUserButton = document.getElementById('toggleUser');
+          const userPage = document.getElementById('userPage');
+          const adminPage = document.getElementById('adminPage');
+
+          toggleAdminButton.addEventListener('click', function () {
+              userPage.classList.add('hidden');
+              adminPage.classList.remove('hidden');
+              toggleAdminButton.classList.add('hidden');
+              toggleUserButton.classList.remove('hidden');
+          });
+
+          toggleUserButton.addEventListener('click', function () {
+              adminPage.classList.add('hidden');
+              userPage.classList.remove('hidden');
+              toggleUserButton.classList.add('hidden');
+              toggleAdminButton.classList.remove('hidden');
+          });
+      });
+    </script>
 </head>
 <body>
-        <header>
-            <div class="logo">
-                <img src="../clogo.png" alt="Logo"> <!-- Replace 'logo.png' with your logo image file -->
-                <h1>TechHunters</h1>
-            </div>
-            <div class="nav-buttons">
-                <a href="#"><button>Button1</button></a>
-                <a href="#"><button>Button2</button></a>
-                <a href="#"><button>Button3</button></a>
-            </div>
-        </header>
-        
-        <main>
-            <!-- Resource Allocation Section -->
-            <section class="resource-allocation">
+    <header>
+        <div class="logo">
+            <img src="../clogo.png" alt="Logo">
+            <h1>TechHunters</h1>
+        </div>
+        <div class="nav-buttons">
+            <button id="toggleAdmin">Switch to Admin</button>
+            <button id="toggleUser" class="hidden">Switch to User</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- User Resource Management Section -->
+        <section id="userPage" class="user-page">
             <h1>Resource Management</h1>
             <h2>Allocate Resources</h2>
             <form id="resourceForm">
@@ -31,11 +301,9 @@
                 <label for="userID">ID:</label>
                 <input type="text" id="userID" required>
 
-                <label for="resourceType">Resource Type:</label>
-                <select id="resourceType">
-                    <option value="Projector">Projector</option>
-                    <option value="Laptop">Laptop</option>
-                    <option value="Whiteboard">Whiteboard</option>
+                <label for="resourceName">Resource Name:</label>
+                <select id="resourceName">
+                    <!-- Options will be populated dynamically -->
                 </select>
 
                 <label for="resourceCount">Number of Resources:</label>
@@ -43,30 +311,45 @@
 
                 <button type="submit">Allocate Resource</button>
             </form>
+
+            <section class="resource-status">
+                <h2>Allocated Resources</h2>
+                <ul id="resourceList">
+                    <!-- Allocated resources will be shown here -->
+                </ul>
+            </section>
+
+            <button id="downloadData">Download Data as Text File</button>
+
+            <section class="log-section">
+                <h2>Action Log</h2>
+                <ul id="logList">
+                    <!-- Log entries will be shown here -->
+                </ul>
+                <button id="clearLog">Clear Log</button>
+            </section>
         </section>
 
-        <!-- Allocated Resources Section -->
-        <section class="resource-status">
-            <h2>Allocated Resources</h2>
-            <ul id="resourceList">
-                <!-- Allocated resources will be shown here -->
-            </ul>
+        <!-- Admin Resource Management Section -->
+        <section id="adminPage" class="admin-page hidden">
+            <h1>Admin Resource Management</h1>
+            <form id="addResourceForm">
+                <label for="resourceNameAdmin">Resource Name:</label>
+                <input type="text" id="resourceNameAdmin" required>
+
+                <label for="resourceQuantity">Quantity:</label>
+                <input type="number" id="resourceQuantity" min="1" required>
+
+                <button type="submit">Add Resource</button>
+            </form>
+
+            <section class="resource-list">
+                <h2>Available Resources Quantity</h2>
+                <ul id="adminResourceList">
+                    <!-- List of available resources will be shown here -->
+                </ul>
+            </section>
         </section>
-
-        <!-- Download Data Button -->
-        <button id="downloadData">Download Data as Text File</button>
-
-        <!-- Log Section -->
-        <section class="log-section">
-            <h2>Action Log</h2>
-            <ul id="logList">
-                <!-- Log entries will be shown here -->
-            </ul>
-            <button id="clearLog">Clear Log</button>
-        </section>
-
     </main>
-
-    <script src="script.js"></script>
 </body>
 </html>

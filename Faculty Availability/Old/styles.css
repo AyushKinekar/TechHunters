@@ -35,6 +35,24 @@ header h1 {
     margin-right: 10px;
 }
 
+.nav-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.nav-buttons button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.nav-buttons button:hover {
+    background-color: #ddd;
+}
+
 #switchButton {
     float: right;
     margin-top: 0.75%;
@@ -65,8 +83,7 @@ h1 {
     text-align: center;
     font-size: 30px;
     color: #2c3e50;
-}
-
+} 
 h2 {
     color: #2c3e50;
 }
@@ -94,7 +111,7 @@ button:hover {
     background-color: #2980b9;
 }
 
-.search-classroom {
+.search-faculty {
     margin-bottom: 2rem;
 }
 

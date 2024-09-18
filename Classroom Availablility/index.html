@@ -3,67 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCMS - Classroom Availability</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Classroom Management</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Path to your CSS file -->
 </head>
 <body>
     <header>
-        <h1>Smart Classroom Management - Classroom Availability</h1>
+        <div class="logo">
+            <img src="../clogo.png" alt="Logo"> <!-- Replace 'logo.png' with your logo image file -->
+            <h1>Classroom Management</h1>
+        </div>
+        <button id="switchButton">Switch to Admin View</button>
     </header>
 
-    <main>
-        <!-- Check Availability Section -->
-        <section class="check-availability">
-            <h2>Check Classroom Availability</h2>
-            <form id="availabilityForm">
-                <label for="classroomNo.">Classroom No.:</label>
-                <input type="text" id="classroomNo" required>
+    <!-- User View -->
+    <main id="userView">
+        <section class="search-classroom">
+            <h1>Classroom Management</h1>
+            <h2>Find Classroom</h2>
+            <input type="text" id="classroomSearchInput" placeholder="Enter Classroom Name">
+            <button id="searchButton">Search</button>
+            <p id="searchResult"></p>
+        </section>
 
-                <label for="bookingDate">Date:</label>
-                <input type="date" id="bookingDate" required>
-
-                <label for="bookingTime">Time:</label>
-                <input type="time" id="bookingTime" required>
-
-                <button type="submit">Check Availability</button>
-            </form>
-            <div id="availabilityResult">
-                <!-- Availability result will be shown here -->
+        <section class="availability-chart">
+            <h2>Availability Chart</h2>
+            <div id="availabilityChart">
+                <!-- Availability chart will be populated here -->
             </div>
+            <button id="showMoreChartButton" style="display: none;">Show More</button>
+            <button id="showLessChartButton" style="display: none;">Show Less</button>
         </section>
 
-        <!-- Book Classroom Section -->
-        <section class="book-classroom">
-            <h2>Book a Classroom</h2>
-            <form id="bookingForm">
-                <label for="bookerName">Name:</label>
-                <input type="text" id="bookerName" required>
-
-                <label for="bookerID">ID:</label>
-                <input type="text" id="bookerID" required>
-
-                <label for="classroomToBook">Classroom ID:</label>
-                <input type="text" id="classroomToBook" required>
-
-                <label for="bookingStart">Start Time:</label>
-                <input type="datetime-local" id="bookingStart" required>
-
-                <label for="bookingEnd">End Time:</label>
-                <input type="datetime-local" id="bookingEnd" required>
-
-                <button type="submit">Book Classroom</button>
-            </form>
-        </section>
-
-        <!-- View Bookings Section -->
-        <section class="view-bookings">
-            <h2>View All Bookings</h2>
-            <ul id="bookingList">
-                <!-- Bookings will be displayed here -->
-            </ul>
+        <section class="classroom-list">
+            <h2>Classroom List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Classroom Name</th>
+                        <th>Room Number</th>
+                    </tr>
+                </thead>
+                <tbody id="classroomTableBody">
+                    <!-- Classroom list will be populated here -->
+                </tbody>
+            </table>
+            <button id="showMoreListButton" style="display: none;">Show More</button>
+            <button id="showLessListButton" style="display: none;">Show Less</button>
         </section>
     </main>
 
-    <script src="classroom-script.js"></script>
+    <!-- Admin View -->
+    <main id="adminView" style="display: none;">
+        <section class="add-classroom">
+            <h2>Add Classroom</h2>
+            <form id="addClassroomForm">
+                <input type="text" id="newClassroomName" placeholder="Classroom Name" required>
+                <input type="text" id="newRoomNumber" placeholder="Room Number" required>
+                <select id="newAvailability" required>
+                    <option value="true">Available</option>
+                    <option value="false">Not Available</option>
+                </select>
+                <button type="submit">Add Classroom</button>
+            </form>
+        </section>
+
+        <section class="classroom-list">
+            <h2>Classroom List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Classroom Name</th>
+                        <th>Room Number</th>
+                        <th>Availability</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminClassroomTableBody">
+                    <!-- Admin classroom list will be populated here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getDatabase, ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQ_ZksLUIiSvlLh-ebM5mlEmOTD6QAPxg",
+            authDomain: "techhunter-9b7c5.firebaseapp.com",
+            databaseURL: "https://techhunter-9b7c5-default-rtdb.firebaseio.com",
+            projectId: "techhunter-9b7c5",
+            storageBucket: "techhunter-9b7c5.appspot.com",
+            messagingSenderId: "969801209943",
+            appId: "1:969801209943:web:3bdf834868d13b7c02ab12",
+            measurementId: "G-4XKR35QGKW"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const analytics = getAnalytics(app);
+    
+        let classrooms = [];
+        let isAdminView = false;
+        const initialShownItems = 5;
+        let shownItemsCount = initialShownItems;
+    
+        function fetchClassrooms() {
+            const dbRef = ref(database, 'classrooms');
+            get(dbRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    classrooms = Object.entries(snapshot.val()).map(([room, data]) => ({
+                        name: data.name,
+                        room: room,
+                        available: data.available
+                    }));
+                } 
+                renderClassroomListUser(classrooms);
+                renderAvailabilityChart(classrooms);
+                renderClassroomListAdmin();
+            }).catch((error) => {
+                console.error("Error fetching data: ", error);
+            });
+        }
+    
+        function saveClassrooms() {
+            const dbRef = ref(database, 'classrooms');
+            const updates = {};
+    
+            classrooms.forEach(classroom => {
+                updates[classroom.room] = {
+                    name: classroom.name,
+                    available: classroom.available
+                };
+            });
+    
+            set(dbRef, updates).then(() => {
+                console.log('Data saved successfully');
+            }).catch((error) => {
+                console.error('Error saving data:', error);
+            });
+        }
+    
+        function renderClassroomListUser(classroomsToDisplay) {
+            const classroomTableBody = document.getElementById('classroomTableBody');
+            const showMoreListButton = document.getElementById('showMoreListButton');
+            const showLessListButton = document.getElementById('showLessListButton');
+            classroomTableBody.innerHTML = '';
+    
+            let displayedClassrooms = classroomsToDisplay.slice(0, shownItemsCount);
+    
+            displayedClassrooms.forEach(classroom => {
+                const row = document.createElement('tr');
+                row.innerHTML = 
+                    `<td>${classroom.name}</td>
+                     <td>${classroom.room}</td>`;
+                classroomTableBody.appendChild(row);
+            });
+    
+            showMoreListButton.style.display = classroomsToDisplay.length > shownItemsCount ? 'block' : 'none';
+            showLessListButton.style.display = shownItemsCount > initialShownItems ? 'block' : 'none';
+        }
+    
+        function renderAvailabilityChart(classroomsToDisplay) {
+            const availabilityChart = document.getElementById('availabilityChart');
+            const showMoreChartButton = document.getElementById('showMoreChartButton');
+            const showLessChartButton = document.getElementById('showLessChartButton');
+            availabilityChart.innerHTML = '';
+    
+            let displayedClassrooms = classroomsToDisplay.slice(0, shownItemsCount);
+    
+            displayedClassrooms.forEach(classroom => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.innerHTML = 
+                    `<div class="bar-label">${classroom.name}</div>
+                     <div class="status-label ${classroom.available ? 'available-label' : 'not-available-label'}">
+                        ${classroom.available ? 'Available' : 'Not Available'}
+                     </div>`;
+                availabilityChart.appendChild(bar);
+            });
+    
+            showMoreChartButton.style.display = classroomsToDisplay.length > shownItemsCount ? 'block' : 'none';
+            showLessChartButton.style.display = shownItemsCount > initialShownItems ? 'block' : 'none';
+        }
+    
+        function renderClassroomListAdmin() {
+            const adminClassroomTableBody = document.getElementById('adminClassroomTableBody');
+            adminClassroomTableBody.innerHTML = '';
+    
+            classrooms.forEach((classroom, index) => {
+                const row = document.createElement('tr');
+                row.dataset.index = index; // Store the index in a data attribute
+                row.innerHTML = 
+                    `<td contenteditable="false" class="editable">${classroom.name}</td>
+                     <td contenteditable="false" class="editable">${classroom.room}</td>
+                     <td>
+                        <select class="availability-select" ${classroom.available ? '' : 'disabled'}>
+                            <option value="true" ${classroom.available ? 'selected' : ''}>Available</option>
+                            <option value="false" ${!classroom.available ? 'selected' : ''}>Not Available</option>
+                        </select>
+                     </td>
+                     <td>
+                        <button class="edit-button" onclick="window.enableEdit(this)">Edit</button>
+                        <button class="save-button" onclick="window.saveClassroom(this)" style="display: none;">Save</button>
+                        <button class="delete-button" onclick="window.deleteClassroom(this)">Delete</button>
+                     </td>`;
+                adminClassroomTableBody.appendChild(row);
+            });
+        }
+    
+        function enableEdit(button) {
+            const row = button.closest('tr');
+            row.querySelectorAll('.editable').forEach(cell => {
+                cell.contentEditable = true;
+                cell.style.backgroundColor = '#f9f9f9';
+            });
+            row.querySelector('.availability-select').disabled = false;
+            button.style.display = 'none';
+            row.querySelector('.save-button').style.display = 'inline-block';
+        }
+    
+        function saveClassroom(button) {
+            const row = button.closest('tr');
+            const index = row.dataset.index;
+    
+            classrooms[index].name = row.children[0].innerText;
+            classrooms[index].room = row.children[1].innerText;
+            classrooms[index].available = row.querySelector('.availability-select').value === 'true';
+    
+            saveClassrooms();
+            row.querySelectorAll('.editable').forEach(cell => {
+                cell.contentEditable = false;
+                cell.style.backgroundColor = '#ffffff';
+            });
+            row.querySelector('.availability-select').disabled = true;
+            button.style.display = 'none';
+            row.querySelector('.edit-button').style.display = 'inline-block';
+            renderClassroomListUser(classrooms);
+            renderAvailabilityChart(classrooms);
+        }
+    
+        function deleteClassroom(button) {
+            const row = button.closest('tr');
+            const index = row.dataset.index;
+    
+            classrooms.splice(index, 1); // Remove from local array first
+            saveClassrooms(); // Update Firebase database
+    
+            const dbRef = ref(database, `classrooms/${classrooms[index].room}`);
+            remove(dbRef).then(() => {
+                console.log('Data deleted successfully');
+            }).catch((error) => {
+                console.error('Error deleting data:', error);
+            });
+    
+            row.remove();
+            renderClassroomListUser(classrooms);
+            renderAvailabilityChart(classrooms);
+        }
+    
+        window.enableEdit = enableEdit;
+        window.saveClassroom = saveClassroom;
+        window.deleteClassroom = deleteClassroom;
+    
+        document.getElementById('searchButton').addEventListener('click', () => {
+            const searchTerm = document.getElementById('classroomSearchInput').value.toLowerCase();
+            const filteredClassrooms = classrooms.filter(classroom => 
+                classroom.name.toLowerCase().includes(searchTerm)
+            );
+            renderClassroomListUser(filteredClassrooms);
+        });
+    
+        document.getElementById('showMoreListButton').addEventListener('click', () => {
+            shownItemsCount += 5;
+            renderClassroomListUser(classrooms);
+            renderAvailabilityChart(classrooms);
+        });
+    
+        document.getElementById('showLessListButton').addEventListener('click', () => {
+            shownItemsCount = Math.max(initialShownItems, shownItemsCount - 5);
+            renderClassroomListUser(classrooms);
+            renderAvailabilityChart(classrooms);
+        });
+    
+        document.getElementById('showMoreChartButton').addEventListener('click', () => {
+            shownItemsCount += 5;
+            renderAvailabilityChart(classrooms);
+            renderClassroomListUser(classrooms);
+        });
+    
+        document.getElementById('showLessChartButton').addEventListener('click', () => {
+            shownItemsCount = Math.max(initialShownItems, shownItemsCount - 5);
+            renderAvailabilityChart(classrooms);
+            renderClassroomListUser(classrooms);
+        });
+    
+        document.getElementById('addClassroomForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+    
+            const newClassroomName = document.getElementById('newClassroomName').value;
+            const newRoomNumber = document.getElementById('newRoomNumber').value;
+            const newAvailability = document.getElementById('newAvailability').value === 'true';
+    
+            classrooms.push({
+                name: newClassroomName,
+                room: newRoomNumber,
+                available: newAvailability
+            });
+    
+            saveClassrooms();
+            document.getElementById('addClassroomForm').reset();
+            renderClassroomListAdmin();
+            renderClassroomListUser(classrooms);
+            renderAvailabilityChart(classrooms);
+        });
+    
+        document.getElementById('switchButton').addEventListener('click', () => {
+            isAdminView = !isAdminView;
+            document.getElementById('userView').style.display = isAdminView ? 'none' : 'block';
+            document.getElementById('adminView').style.display = isAdminView ? 'block' : 'none';
+            document.getElementById('switchButton').textContent = isAdminView ? 'Switch to User View' : 'Switch to Admin View';
+        });
+    
+        fetchClassrooms();
+    </script>
 </body>
 </html>
